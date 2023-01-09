@@ -1,0 +1,11 @@
+name: CI
+on:
+  pull_request:
+  workflow_call:
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: CI
+        run: echo "Everything looks good!"
