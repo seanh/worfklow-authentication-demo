@@ -10,15 +10,16 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      - name: Checkout repo
-        uses: actions/checkout@v3
-      - name: Install PyJWT and requests
-        run: python3.11 -m pip install pyjwt[crypto] requests
+      - name: Install gha-token
+        run: python3.11 -m pipx install "git+https://github.com/hypothesis/gha-token.git"
       - name: Get GitHub token
         id: github_token
-        run: echo GITHUB_TOKEN=$(bin/gha-token --app-id 279564 --installation-id 32966310 --private-key "$PRIVATE_KEY") >> $GITHUB_OUTPUT
+        run: echo GITHUB_TOKEN=$(gha-token --app-id 279564 --installation-id 32966310 --private-key "$PRIVATE_KEY") >> $GITHUB_OUTPUT
         env:
           PRIVATE_KEY: ${{ secrets.MY_GITHUB_APP_PRIVATE_KEY }}
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        token: ${{ steps.github_token.outputs.GITHUB_TOKEN }}
       - name: Make some automated changes
         run: echo "Automated changes" >> README.md
       - name: Configure git
@@ -29,14 +30,8 @@ jobs:
         run: git switch --force-create my-branch main
       - name: Commit the changes
         run: git commit README.md -m "Automated commit"
-      - name: Set up git authentication
-        run: gh auth setup-git
-        env:
-          GITHUB_TOKEN: ${{ steps.github_token.outputs.GITHUB_TOKEN }}
       - name: Push branch
         run: git push --force origin my-branch:my-branch
-        env:
-          GITHUB_TOKEN: ${{ steps.github_token.outputs.GITHUB_TOKEN }}
       - name: Open PR
         run: gh pr create --fill
         env:
