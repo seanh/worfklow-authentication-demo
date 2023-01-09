@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       - name: Install PyJWT and requests
-        run: python3.11 -m pip install pyjwt requests
+        run: python3.11 -m pip install pyjwt[crypto] requests
       - name: Get GitHub token
         id: github_token
         run: echo GITHUB_TOKEN=$(bin/gha-token --app-id 279564 --installation-id 32966310 --private-key "$PRIVATE_KEY") >> $GITHUB_OUTPUT
