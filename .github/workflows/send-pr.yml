@@ -35,6 +35,8 @@ jobs:
           GITHUB_TOKEN: ${{ steps.github_token.outputs.GITHUB_TOKEN }}
       - name: Push branch
         run: git push --force origin my-branch:my-branch
+        env:
+          GITHUB_TOKEN: ${{ steps.github_token.outputs.GITHUB_TOKEN }}
       - name: Open PR
         run: gh pr create --fill
         env:
