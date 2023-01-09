@@ -19,7 +19,8 @@ jobs:
           PRIVATE_KEY: ${{ secrets.MY_GITHUB_APP_PRIVATE_KEY }}
       - name: Checkout repo
         uses: actions/checkout@v3
-        token: ${{ steps.github_token.outputs.GITHUB_TOKEN }}
+        with:
+          token: ${{ steps.github_token.outputs.GITHUB_TOKEN }}
       - name: Make some automated changes
         run: echo "Automated changes" >> README.md
       - name: Configure git
