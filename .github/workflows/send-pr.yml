@@ -11,7 +11,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install gha-token
-        run: python3.11 -m pipx install "git+https://github.com/hypothesis/gha-token.git"
+        run: python3.11 -m pip install "git+https://github.com/hypothesis/gha-token.git"
       - name: Get GitHub token
         id: github_token
         run: echo GITHUB_TOKEN=$(gha-token --app-id 279564 --installation-id 32966310 --private-key "$PRIVATE_KEY") >> $GITHUB_OUTPUT
