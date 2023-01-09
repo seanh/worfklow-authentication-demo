@@ -1,0 +1,37 @@
+name: Send a Pull Request
+on:
+  workflow_dispatch:
+jobs:
+  my_job:
+    name: Send a Pull Request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      - name: Get GitHub token
+        id: github_token
+        run: echo GITHUB_TOKEN=$(bin/gha-token --app-id 279564 --installation-id 32966310 --private-key "$PRIVATE_KEY") >> $GITHUB_OUTPUT
+        env:
+          PRIVATE_KEY: ${{ secrets.MY_GITHUB_APP_PRIVATE_KEY }}
+      - name: Make some automated changes
+        run: echo "Automated changes" >> README.md
+      - name: Configure git
+        run: |
+          git config --global user.name "send-pr.yml workflow"
+          git config --global user.email "<>"
+      - name: Switch to a branch
+        run: git switch --force-create my-branch main
+      - name: Commit the changes
+        run: git commit README.md -m "Automated commit"
+      - name: Set up git authentication
+        run: gh auth setup-git
+        env:
+          GITHUB_TOKEN: ${{ steps.github_token.outputs.GITHUB_TOKEN }}
+      - name: Push branch
+        run: git push --force origin my-branch:my-branch
+      - name: Open PR
+        run: gh pr create --fill
+        env:
+          GITHUB_TOKEN: ${{ steps.github_token.outputs.GITHUB_TOKEN }}
